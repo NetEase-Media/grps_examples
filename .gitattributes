@@ -1,0 +1,2 @@
+cpp_examples/resnet-50-torch/data/resnet50_pretrained.pt filter=lfs diff=lfs merge=lfs -text
+cpp_examples/resnet-50-tf/data/imagenet_resnet_v1_50_classification_5/variables/variables.data-00000-of-00001 filter=lfs diff=lfs merge=lfs -text

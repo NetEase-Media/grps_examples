@@ -1,0 +1,10 @@
+cmake_build
+build
+client/build
+.cache
+output
+.idea
+cmake-build-*
+client/cmake-build-*
+.listing
+second_party/grps-server-framework/lib/libgrps-server-framework.a
