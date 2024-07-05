@@ -96,8 +96,14 @@ void YourConverter::PreProcess(const ::grps::protos::v1::GrpsMessage& input,
     CLOG4(ERROR, "Input image is empty.");
     throw ConverterException("Input image is empty.");
   }
+  nvinfer1::Dims dims;
+  dims.nbDims = 4;
+  dims.d[0] = 1;
+  dims.d[1] = 3;
+  dims.d[2] = 224;
+  dims.d[3] = 224;
   auto img_tensor =
-    std::make_shared<TrtHostBinding>("x", nvinfer1::Dims({4, {1, 3, 224, 224}, {}}), nvinfer1::DataType::kFLOAT);
+    std::make_shared<TrtHostBinding>("x", std::move(dims), nvinfer1::DataType::kFLOAT);
   DecodeImgToTensor(img_data, *img_tensor, 0);
 #if YOUR_CONVERTER_DEBUG
   CLOG4(INFO, "image tensor data: " << img_tensor->DebugString());
@@ -148,17 +154,13 @@ void YourConverter::BatchPreProcess(std::vector<const ::grps::protos::v1::GrpsMe
     }
     img_datas.emplace_back(img_data);
   }
-
-  auto img_tensor = std::make_shared<TrtHostBinding>("x",
-                                                     nvinfer1::Dims({4,
-                                                                     {
-                                                                       int(inputs.size()),
-                                                                       3,
-                                                                       224,
-                                                                       224,
-                                                                     },
-                                                                     {}}),
-                                                     nvinfer1::DataType::kFLOAT);
+  nvinfer1::Dims dims;
+  dims.nbDims = 4;
+  dims.d[0] = inputs.size();
+  dims.d[1] = 3;
+  dims.d[2] = 224;
+  dims.d[3] = 224;
+  auto img_tensor = std::make_shared<TrtHostBinding>("x", std::move(dims), nvinfer1::DataType::kFLOAT);
   DecodeImgToTensor(img_datas, *img_tensor);
 
 #if YOUR_CONVERTER_DEBUG
