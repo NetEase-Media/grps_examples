@@ -1,6 +1,6 @@
 # vllm
-使用```Vllm LLMEngine Api```实现vllm推理后端，采用自定义http格式进行服务部署。
 
+使用```Vllm LLMEngine Api```实现vllm推理后端，采用自定义http格式进行服务部署。
 
 ## 1. 工程结构
 
@@ -88,7 +88,15 @@ curl --no-buffer -X POST -H "Content-Type:application/json" -d '{"prompt": "华�
 # 华盛顿(George Washington)是美国的一位政治家和将军,也是美国独立战争期间的指挥官,还是美国第一任总统。他出生于1732年,逝世于1799年。他被认为是美国历史上最伟大的领袖之一,因为他在美国革命战争期间的英勇行为和后来的政治领导能力。他建立了许多重要的政治制度和政策,对美国的发展和进步做出了巨大贡献。
 ```
 
-## 5. 关闭docker服务
+## 5. 服务指标监控
+
+登录http://ip:port/即可查看指标监控，在vllm后端中增加了tp的监控，如下：<br>
+![tp_monitor.png](data/tp_monitor.png)<br>
+
+以及grps内置GPU监控：<br>
+![gpu_monitor.png](data/gpu_monitor.png)
+
+## 6. 关闭docker服务
 
 ```bash
 docker rm -f vllm_online

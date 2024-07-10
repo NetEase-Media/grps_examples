@@ -31,4 +31,5 @@ if __name__ == '__main__':
         print('Usage: python3 http_client.py <server> <prompt>')
         sys.exit(1)
 
-    http_request(sys.argv[1], sys.argv[2])
+    while True:
+        http_request(sys.argv[1], sys.argv[2])
