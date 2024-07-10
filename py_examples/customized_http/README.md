@@ -1,4 +1,4 @@
-# grps py template
+# customized_http
 
 自定义http请求和返回的样例，使用自定义json格式实现一个"c = a + b"的功能。
 
