@@ -3,6 +3,7 @@ import threading
 
 from grps_framework.context.context import GrpsContext
 from grps_framework.logger.logger import clogger
+from grps_framework.monitor.monitor import app_monitor
 from grps_framework.model_infer.inferer import inferer_register, ModelInferer
 from vllm import EngineArgs, LLMEngine
 from vllm.sampling_params import SamplingParams
@@ -73,6 +74,7 @@ class VllmInferer(ModelInferer):
             to user when start service.
         """
         self._engine = LLMEngine.from_engine_args(self._engine_args)
+        self._engine.log_stats = False
         self._worker_thread = threading.Thread(target=self.worker_fn)
         self._worker_thread.daemon = True
         self._worker_thread.start()
@@ -96,9 +98,14 @@ class VllmInferer(ModelInferer):
                     else:
                         text = request_output.outputs[0].text
                         job = self._job_map[request_output.request_id]
+
+                        # monitor throughput
+                        app_monitor.inc('tp(token/s)', (len(text) - job.last_len))
+
                         if job.context.if_streaming():
                             job.context.customized_http_stream_respond(text[job.last_len:])
-                            job.last_len = len(text)
+
+                        job.last_len = len(text)
 
     def infer(self, inp, context: GrpsContext):
         """
