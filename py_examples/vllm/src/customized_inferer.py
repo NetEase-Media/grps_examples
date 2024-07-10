@@ -127,9 +127,8 @@ class VllmInferer(ModelInferer):
         request = context.get_http_request()
         req_data = request.get_json()
         # clogger.info('req_data: {}'.format(req_data))
-        prompt = req_data.get('prompt', '')
-        sampling_params = req_data.get('sampling_params', {})
-        sampling_params = SamplingParams(**sampling_params)
+        prompt = req_data.pop('prompt')
+        sampling_params = SamplingParams(**req_data)
         request_id = random_uuid()
 
         if not prompt:

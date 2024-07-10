@@ -45,12 +45,12 @@ PORT(HTTP,RPC)      NAME                PID                 DEPLOY_PATH
 7080                my_grps             ***                 /root/.grps/my_grps
 
 # 非流式请求
-curl -X POST -H "Content-Type:application/json" -d '{"prompt": "华盛顿是谁? ", "sampling_params": {"temperature": 0.1, "top_p": 0.5, "max_tokens": 4096}}' 'http://127.0.0.1:7080/generate'
+curl -X POST -H "Content-Type:application/json" -d '{"prompt": "华盛顿是谁? ", "temperature": 0.1, "top_p": 0.5, "max_tokens": 4096}' 'http://127.0.0.1:7080/generate'
 # 输出结果如下：
 # 华盛顿(George Washington)是美国的一位政治家和将军,也是美国独立战争期间的指挥官,还是美国第一任总统。他出生于1732年,逝世于1799年。他被认为是美国历史上最伟大的领袖之一,因为他在美国革命战争期间的英勇行为和后来的政治领导能力。他建立了许多重要的政治制度和政策,对美国的发展和进步做出了巨大贡献。
 
 # 流式请求
-curl --no-buffer -X POST -H "Content-Type:application/json" -d '{"prompt": "华盛顿是谁? ", "sampling_params": {"temperature": 0.1, "top_p": 0.5, "max_tokens": 4096}}' 'http://127.0.0.1:7080/generate?streaming=true'
+curl --no-buffer -X POST -H "Content-Type:application/json" -d '{"prompt": "华盛顿是谁? ", "temperature": 0.1, "top_p": 0.5, "max_tokens": 4096}' 'http://127.0.0.1:7080/generate?streaming=true'
 # 输出结果如下：
 # 华盛顿(George Washington)是美国的一位政治家和将军,也是美国独立战争期间的指挥官,还是美国第一任总统。他出生于1732年,逝世于1799年。他被认为是美国历史上最伟大的领袖之一,因为他在美国革命战争期间的英勇行为和后来的政治领导能力。他建立了许多重要的政治制度和政策,对美国的发展和进步做出了巨大贡献。
 
@@ -78,12 +78,12 @@ docker logs -f vllm_online
 
 ```bash
 # 非流式请求
-curl -X POST -H "Content-Type:application/json" -d '{"prompt": "华盛顿是谁? ", "sampling_params": {"temperature": 0.1, "top_p": 0.5, "max_tokens": 4096}}' 'http://127.0.0.1:7080/generate'
+curl -X POST -H "Content-Type:application/json" -d '{"prompt": "华盛顿是谁? ", "temperature": 0.1, "top_p": 0.5, "max_tokens": 4096}' 'http://127.0.0.1:7080/generate'
 # 输出结果如下：
 # 华盛顿(George Washington)是美国的一位政治家和将军,也是美国独立战争期间的指挥官,还是美国第一任总统。他出生于1732年,逝世于1799年。他被认为是美国历史上最伟大的领袖之一,因为他在美国革命战争期间的英勇行为和后来的政治领导能力。他建立了许多重要的政治制度和政策,对美国的发展和进步做出了巨大贡献。
 
 # 流式请求
-curl --no-buffer -X POST -H "Content-Type:application/json" -d '{"prompt": "华盛顿是谁? ", "sampling_params": {"temperature": 0.1, "top_p": 0.5, "max_tokens": 4096}}' 'http://127.0.0.1:7080/generate?streaming=true'
+curl --no-buffer -X POST -H "Content-Type:application/json" -d '{"prompt": "华盛顿是谁? ", "temperature": 0.1, "top_p": 0.5, "max_tokens": 4096}' 'http://127.0.0.1:7080/generate?streaming=true'
 # 输出结果如下：
 # 华盛顿(George Washington)是美国的一位政治家和将军,也是美国独立战争期间的指挥官,还是美国第一任总统。他出生于1732年,逝世于1799年。他被认为是美国历史上最伟大的领袖之一,因为他在美国革命战争期间的英勇行为和后来的政治领导能力。他建立了许多重要的政治制度和政策,对美国的发展和进步做出了巨大贡献。
 ```
