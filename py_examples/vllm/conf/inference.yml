@@ -1,13 +1,12 @@
 models:
   - name: your_model
     version: 1.0.0
-    device: cuda # device of model inferer. like `cpu`, `cuda`(==`cuda:0`), `gpu`(==`cuda:0`), `cuda:0`, `gpu:0`, `original`(original device specified when exported model).
-    inp_device: # when `inferer_type` is `torch` and `device` is `original`, should specify device of model inferer input.
+    device: auto
     inferer_type: customized # only support `torch` (torch script model format), `tensorflow` (saved model format), `tensorrt` (tensorrt engine) or `customized` now.
     inferer_name: vllm # customized model inferer name that has registered in src/customized_inferer. Not none when inferer_type is `customized`.
     inferer_path: # path of model inferer.
     inferer_args: # more args of model inferer.
-      model: "THUDM/chatglm3-6b"
+      model: THUDM/chatglm3-6b
       trust_remote_code: true
       dtype: float16
       tensor_parallel_size: 1
@@ -17,10 +16,6 @@ models:
     converter_name: # converter name that has registered in src/customized_converter.py. Not none when converter_type is `customized`.
     converter_path: # path of converter.
     converter_args: # more args of converter.
-    batching: # Batching config.
-      type: none # `none`, `dynamic`.
-      max_batch_size: 16 # Maximum batch size.
-      batch_timeout_us: 1000 # Maximum waiting time for batching in milliseconds.
 
 dag:
   type: sequential # only support `sequential` now.

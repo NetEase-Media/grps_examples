@@ -101,3 +101,44 @@ curl --no-buffer -X POST -H "Content-Type:application/json" -d '{"prompt": "华�
 ```bash
 docker rm -f vllm_online
 ```
+
+## 7. 同vllm api-server相比
+
+grps-vllm通过LLMEngine同步api进行实现，同vllm api-server相比较使用的服务性能有所提升，例如使用如下环境进行测试：
+
+```
+GPU: RTX 3090
+VLLM: 0.4.3
+CUDA: 11.8
+GRPS: 1.1.0
+LLM: THUDM/chatglm3-6b
+```
+
+固定输入：
+
+| 服务 \ 吞吐(tokens/s) \ 并发 | 1      | 2      | 4      | 8      | 16      | 32      |
+|------------------------|--------|--------|--------|--------|---------|---------|
+| vllm api-server        | 107.47 | 199.28 | 378.50 | 709.28 | 1255.43 | 2119.44 |
+| grps vllm自定义服务         | 112.32 | 208.24 | 405.12 | 775.42 | 1422.19 | 2486.66 |
+| 同比                     | 4.51%  | 4.50%  | 7.03%  | 9.32%  | 13.28%  | 17.33%  | 
+
+随机输入：
+
+| 服务 \ 吞吐(tokens/s) \ 并发 | 1      | 2      | 4      | 8      | 16      | 32      |
+|------------------------|--------|--------|--------|--------|---------|---------|
+| vllm api-server        | 102.36 | 188.54 | 360.36 | 679.35 | 1166.75 | 1914.54 |
+| grps vllm自定义服务         | 105.90 | 196.56 | 373.07 | 721.21 | 1313.45 | 2199.39 |
+| 同比                     | 3.46%  | 4.25%  | 3.53%  | 6.16%  | 12.57%  | 14.88%  | 
+
+vllm api-server使用如下方式启动：
+
+```bash
+python -m vllm.entrypoints.api_server --model THUDM/chatglm3-6b --trust-remote-code --port 7080
+```
+
+使用如下benchmark脚本测试：
+
+```
+python3 client/python/grps_http_bench.py <concurrency> <random_prompt>
+python3 client/python/vllm_http_bench.py <concurrency> <random_prompt>
+```

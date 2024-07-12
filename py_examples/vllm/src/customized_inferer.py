@@ -1,4 +1,5 @@
 # Customized deep learning model inferer. Including model load and model infer.
+import json
 import threading
 
 from grps_framework.context.context import GrpsContext
@@ -12,10 +13,12 @@ from vllm.utils import random_uuid
 
 class VllmInferer(ModelInferer):
     class Job:
-        def __init__(self, context):
+        def __init__(self, context, prompt='', request=None):
             self._complete_condition = threading.Condition()
             self._context = context
             self._last_len = 0
+            self._prompt = prompt
+            self._request = request
 
         def wait(self):
             with self._complete_condition:
@@ -25,6 +28,14 @@ class VllmInferer(ModelInferer):
         def done(self):
             with self._complete_condition:
                 self._complete_condition.notify()
+
+        @property
+        def prompt(self):
+            return self._prompt
+
+        @property
+        def request(self):
+            return self._request
 
         @property
         def context(self):
@@ -89,9 +100,10 @@ class VllmInferer(ModelInferer):
             while self._engine.has_unfinished_requests():
                 request_outputs = self._engine.step()
                 for request_output in request_outputs:
+                    job = self._job_map[request_output.request_id]
                     if request_output.finished:
                         text = request_output.outputs[0].text
-                        job = self._job_map.pop(request_output.request_id)
+                        self._job_map.pop(request_output.request_id)
                         if not job.context.if_streaming():
                             job.context.set_http_response(text)
                         job.done()
@@ -134,7 +146,7 @@ class VllmInferer(ModelInferer):
         if not prompt:
             raise ValueError('prompt is empty.')
 
-        job = self.Job(context)
+        job = self.Job(context, prompt, request)
         with self._job_cv:
             self._job_map[request_id] = job
             self._engine.add_request(request_id, prompt, sampling_params)
