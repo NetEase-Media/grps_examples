@@ -1,6 +1,6 @@
 # vllm
 
-使用```Vllm LLMEngine Api```实现vllm推理后端，采用自定义http格式进行服务部署。
+使用```Vllm LLMEngine Api```实现vllm推理后端，采用自定义http格式进行服务部署，同vllm api-server相比较使用的服务性能有所提升。
 
 1. [工程结构](#1-工程结构)
 2. [本地开发与调试](#2-本地开发与调试)
