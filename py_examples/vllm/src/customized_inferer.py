@@ -101,22 +101,19 @@ class VllmInferer(ModelInferer):
                 request_outputs = self._engine.step()
                 for request_output in request_outputs:
                     job = self._job_map[request_output.request_id]
+                    text = request_output.outputs[0].text
+
+                    if job.context.if_streaming():
+                        job.context.customized_http_stream_respond(text[job.last_len:])
+
                     if request_output.finished:
-                        text = request_output.outputs[0].text
                         self._job_map.pop(request_output.request_id)
                         if not job.context.if_streaming():
                             job.context.set_http_response(text)
                         job.done()
                     else:
-                        text = request_output.outputs[0].text
-                        job = self._job_map[request_output.request_id]
-
                         # monitor throughput
                         app_monitor.inc('tp(token/s)', (len(text) - job.last_len))
-
-                        if job.context.if_streaming():
-                            job.context.customized_http_stream_respond(text[job.last_len:])
-
                         job.last_len = len(text)
 
     def infer(self, inp, context: GrpsContext):
