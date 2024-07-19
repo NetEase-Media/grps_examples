@@ -8,9 +8,9 @@
 
 ## 注意事项
 
-仓库中有lfs文件，注意安装git-lfs：
+仓库中有大文件，注意使用git-lfs：
 
 ```
 apt update && apt install git-lfs
-git clone https://github.com/NetEase-Media/grps_examples.git
+git lfs clone https://github.com/NetEase-Media/grps_examples.git
 ```
