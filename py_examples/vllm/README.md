@@ -41,8 +41,8 @@ inferer_args: # more args of model inferer.
   gpu_memory_utilization: 0.9
   device: auto
 
-# 构建
-grpst archive .
+# 跳过单测直接构建
+grpst archive . --skip_unittest
 
 # 部署
 grpst start ./server.mar
