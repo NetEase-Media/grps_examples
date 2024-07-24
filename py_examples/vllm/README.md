@@ -98,7 +98,7 @@ curl --no-buffer -X POST -H "Content-Type:application/json" -d '{"prompt": "华�
 
 ## 5. 服务指标监控
 
-登录```http://ip:port/```即可查看指标监控，在vllm后端中增加了tp的监控，如下：<br>
+登录```http://ip:port/```即可查看指标监控，在vllm后端中增加了tp（不包含输入token）的监控，如下：<br>
 ![tp_monitor.png](data/tp_monitor.png)<br>
 
 以及grps内置GPU监控：<br>
