@@ -44,8 +44,8 @@ inferer_args: # more args of model inferer.
 # 跳过单测直接构建
 grpst archive . --skip_unittest
 
-# 部署
-grpst start ./server.mar
+# 部署，超时时间可以设置大一些，下载模型需要时间，如600s
+grpst start ./server.mar --timeout 600
 
 # 查看部署状态，可以看到端口（HTTP,RPC）、服务名、进程ID、部署路径
 grpst ps

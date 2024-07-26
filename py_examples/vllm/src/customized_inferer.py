@@ -105,7 +105,7 @@ class VllmInferer(ModelInferer):
 
                     if job.context.if_streaming():
                         if job.context.if_disconnected():  # Abort the request if the client disconnects.
-                            self._engine.abort(request_output.request_id)
+                            self._engine.abort_request(request_output.request_id)
                             continue
                         job.context.customized_http_stream_respond(text[job.last_len:])
 
