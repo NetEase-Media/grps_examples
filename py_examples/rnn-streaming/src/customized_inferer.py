@@ -83,6 +83,8 @@ class YourInferer(TorchModelInferer):
 
         for p in range(self.pred_len):
             if context.if_streaming():  # If streaming, send predicted word to client
+                if context.if_disconnected():
+                    break
                 context.stream_respond(grps_pb2.GrpsMessage(str_data=predicted_word))
 
             output, hidden = TorchModelInferer.infer(self, [inp, hidden], context)

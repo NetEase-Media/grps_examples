@@ -76,6 +76,9 @@ void YourInferer::Infer(const ::grps::protos::v1::GrpsMessage& inputs,
 
     // Add predicted character to string and use as next input
     if (ctx.IfStreaming()) {
+      if (ctx.IfDisconnected()) {
+        break;
+      }
       outputs.set_str_data(idx_to_word_[top_i]);
       ctx.StreamingRespond(outputs);
     } else {

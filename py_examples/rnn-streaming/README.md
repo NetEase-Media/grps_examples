@@ -13,7 +13,6 @@ converter模式，自定义inferer。
 |-- data                                        # 数据文件
 |-- docker                                      # docker镜像构建
 |-- src                                         # 自定义源码
-|   |-- customized_converter.py                 # 自定义前后处理转换器
 |   |-- customized_inferer.py                   # 自定义推理器
 |-- grps_framework-*-py3-none-any.whl           # grps框架依赖包，仅用于代码提示
 |-- requirements.txt                            # 依赖包

@@ -104,10 +104,13 @@ class VllmInferer(ModelInferer):
                     text = request_output.outputs[0].text
 
                     if job.context.if_streaming():
+                        if job.context.if_disconnected():  # Abort the request if the client disconnects.
+                            self._engine.abort(request_output.request_id)
+                            continue
                         job.context.customized_http_stream_respond(text[job.last_len:])
 
                     # monitor throughput
-                    app_monitor.inc('tp(token/s)', (len(text) - job.last_len))
+                    app_monitor.inc('tp(token/s)', (len(text) - job.last_len + len(job.prompt)))
                     job.last_len = len(text)
 
                     if request_output.finished:
