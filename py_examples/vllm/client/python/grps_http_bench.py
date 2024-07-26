@@ -39,7 +39,7 @@ def request(server, random_prompt):
     latency = (end - start) * 1000
     text_output = response.content.decode('utf-8')
     print(text_output, flush=True)
-    tokens = len(text_output)
+    tokens = len(text_output) + len(text_inp)
     speed = tokens / latency * 1000
     print(f'Latency: {latency} ms', flush=True)
     print(f'Tokens: {tokens}', flush=True)
