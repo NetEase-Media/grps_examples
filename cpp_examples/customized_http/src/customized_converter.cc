@@ -66,10 +66,10 @@ void YourConverter::PreProcess(const ::grps::protos::v1::GrpsMessage& input,
   auto a = doc["a"].GetFloat();
   auto b = doc["b"].GetFloat();
 
-  TensorWrapper a_tensor(a);
-  TensorWrapper b_tensor(b);
-  output.emplace_back("a", std::move(a_tensor));
-  output.emplace_back("b", std::move(b_tensor));
+  Eigen::Tensor<float, 1> tensor = Eigen::Tensor<float, 1>(2);
+  tensor(0) = a;
+  tensor(1) = b;
+  output.emplace_back("a_b", std::move(tensor));
 }
 
 void YourConverter::PostProcess(const std::vector<std::pair<std::string, TensorWrapper>>& input,
@@ -88,7 +88,8 @@ void YourConverter::PostProcess(const std::vector<std::pair<std::string, TensorW
   }
 
   // Build response json body.
-  auto c = input[0].second.float_tensor;
+  const auto& c_tensor = input[0].second.eigen_1d_f_tensor;
+  float c = (*c_tensor)(0);
   rapidjson::Document doc;
   doc.SetObject();
   doc.AddMember("c", c, doc.GetAllocator());

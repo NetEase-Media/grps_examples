@@ -29,7 +29,9 @@ void YourInferer::Infer(const std::vector<std::pair<std::string, TensorWrapper>>
                         GrpsContext& context) {
   auto* cntl = context.http_controller();
 
-  if (inputs.size() != 2) {
+  const auto& tensors = *inputs[0].second.eigen_1d_f_tensor;
+
+  if (tensors.size() != 2) {
     // context.set_has_err(true);
     context.set_err_msg("inputs size should be 2.");
     cntl->http_response().set_status_code(brpc::HTTP_STATUS_BAD_REQUEST);
@@ -39,10 +41,12 @@ void YourInferer::Infer(const std::vector<std::pair<std::string, TensorWrapper>>
     return;
   }
 
-  auto a = inputs[0].second.float_tensor;
-  auto b = inputs[1].second.float_tensor;
+  auto a = tensors(0);
+  auto b = tensors(1);
   auto c = a + b;
 
-  outputs.emplace_back("c", TensorWrapper(c));
+  Eigen::Tensor<float, 1> c_tensor = Eigen::Tensor<float, 1>(1);
+  c_tensor(0) = c;
+  outputs.emplace_back("c", std::move(c_tensor));
 }
 } // namespace netease::grps

@@ -18,6 +18,7 @@ class GlobalConfig {
 public:
   // Corresponding to server.yml
   struct ServerConfig {
+    enum class StreamingCtrlMode { kQueryParam, kHeaderParam, kBodyParam };
     struct {
       std::string framework;
       std::string host;
@@ -25,6 +26,11 @@ public:
       struct {
         std::string path;
         bool customized_body = false;
+        struct {
+          StreamingCtrlMode ctrl_mode = StreamingCtrlMode::kQueryParam;
+          std::string ctrl_key = "streaming";
+          std::string res_content_type = "application/octet-stream";
+        } streaming_ctrl;
       } customized_predict_http;
     } interface;
 
@@ -60,7 +66,10 @@ public:
       }
       if (_is_set.customized_predict_http) {
         ss << "customized_predict_http: " << interface.customized_predict_http.path << " "
-           << interface.customized_predict_http.customized_body << std::endl;
+           << interface.customized_predict_http.customized_body << " "
+           << int(interface.customized_predict_http.streaming_ctrl.ctrl_mode) << " "
+           << interface.customized_predict_http.streaming_ctrl.ctrl_key << " "
+           << interface.customized_predict_http.streaming_ctrl.res_content_type << std::endl;
       }
       if (_is_set.max_connections) {
         ss << "max_connections: " << max_connections << std::endl;
@@ -142,6 +151,11 @@ public:
     }
   };
 
+  struct MPIConfig {
+    int world_size;
+    int world_rank;
+  };
+
   static GlobalConfig& Instance() {
     static GlobalConfig instance;
     return instance;
@@ -155,6 +169,8 @@ public:
 
   [[nodiscard]] const ServerConfig& server_config() const { return server_config_; }
   [[nodiscard]] const InferenceConfig& inference_config() const { return inference_config_; }
+  [[nodiscard]] const MPIConfig& mpi() const { return mpi_; }
+  void set_mpi(const MPIConfig& mpi) { mpi_ = mpi; }
 
   bool Load(const std::string& server_conf_path = "./conf/server.yml",
             const std::string& inference_conf_path = "./conf/inference.yml");
@@ -164,6 +180,7 @@ private:
 
   ServerConfig server_config_;
   InferenceConfig inference_config_;
+  MPIConfig mpi_{};
 
   bool LoadServerConf(const std::string& conf_path);
 
