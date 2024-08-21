@@ -30,7 +30,7 @@
 
 ```bash
 # 使用registry.cn-hangzhou.aliyuncs.com/opengrps/grps_gpu:grps1.1.0_cuda11.8_cudnn8.6_vllm0.4.3_py3.10镜像
-docker run -it --runtime=nvidia --rm -v $(pwd):/grps_dev -w /grps_dev registry.cn-hangzhou.aliyuncs.com/opengrps/grps_gpu:grps1.1.0_cuda11.8_cudnn8.6_vllm0.4.3_py3.10 bash
+docker run -it --runtime=nvidia --rm --shm-size=2g --ulimit memlock=-1 -v $(pwd):/grps_dev -w /grps_dev registry.cn-hangzhou.aliyuncs.com/opengrps/grps_gpu:grps1.1.0_cuda11.8_cudnn8.6_vllm0.4.3_py3.10 bash
 
 # 修改conf/inference.yml中的vllm模型参数，如使用THUDM/chatglm3-6b模型
 inferer_args: # more args of model inferer.
@@ -73,7 +73,7 @@ exit
 docker build -t vllm_online:1.0.0 -f docker/Dockerfile .
 
 # 启动docker容器
-docker run -itd --runtime=nvidia --name="vllm_online" -p 7080:7080 vllm_online:1.0.0
+docker run -itd --runtime=nvidia --name="vllm_online" --shm-size=2g --ulimit memlock=-1 -p 7080:7080 vllm_online:1.0.0
 
 # 查看日志
 docker logs -f vllm_online
